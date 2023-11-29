@@ -6,6 +6,8 @@ import Home from "./Home/Home";
 import LogIn from "./LogIn/LogIn";
 import HolidayPicks from "./HolidayPicks/HolidayPicks";
 import PopularRecipes from "./PopularRecipes/PopularRecipes";
+import Search from "./Search/Search";
+
 
 
 export default function App() {
@@ -16,6 +18,7 @@ export default function App() {
         <Route path="/LogIn" element={<LogIn />} />
         <Route path="/Holiday" element={<HolidayPicks />} />
         <Route path="/Popular" element={<PopularRecipes />} />
+        <Route path="/Search" element={<Search />} />
       </Routes>
     </BrowserRouter>
   );

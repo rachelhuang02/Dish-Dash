@@ -22,7 +22,7 @@ const Home = () => {
         </div>
         <div className="card-container">
           <div className="card">
-          <Link to={`/LogIn`}>
+          <Link to={`/Search`}>
             <img src = {search} className = "home_image"/>
             Find Your Recipe 
           </Link>

@@ -1,17 +1,30 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import React from "react";
+import ReactDOM from "react-dom/client";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
+import Home from "./Home/Home";
+import LogIn from "./LogIn/LogIn";
+import HolidayPicks from "./HolidayPicks/HolidayPicks";
+import PopularRecipes from "./PopularRecipes/PopularRecipes";
+import Search from "./Search/Search";
+import CreateUser from "./CreateUser/CreateUser";
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+
+
+export default function App() {
+  return (
+    <BrowserRouter basename={process.env.PUBLIC_URL}>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/LogIn" element={<LogIn />} />
+        <Route path="/Holiday" element={<HolidayPicks />} />
+        <Route path="/Popular" element={<PopularRecipes />} />
+        <Route path="/Search" element={<Search />} />
+        <Route path="/CreateUser" element={<CreateUser/>}/>
+      </Routes>
+    </BrowserRouter>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(<App />);

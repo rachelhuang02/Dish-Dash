@@ -5,6 +5,7 @@ import "./Home.css";
 import search from "./search_icon.png";
 import holiday from "./holiday.png";
 import thumb from "./thumb.png";
+import 'normalize.css/normalize.css';
 
 const Home = () => {
   return (

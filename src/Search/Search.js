@@ -3,6 +3,8 @@ import Header from "../Header/Header";
 import "./Search.css";
 import axios from 'axios';
 import Modal from "../Modal/Modal"
+import { useUser } from '../UserContext';
+import { useNavigate } from "react-router-dom";
 
 
 const Search = () => {
@@ -11,7 +13,26 @@ const Search = () => {
     const [areaFilter, setAreaFilter] = useState('');
     const [searchResults, setSearchResults] = useState([]);
     const [selectedMeal, setSelectedMeal] = useState(null);
-  
+    const [savedRecipes, setSavedRecipes] = useState([]);
+    const { user } = useUser();
+    const navigate = useNavigate();
+
+    useEffect(() => {
+      const fetchSavedRecipes = async () => {
+        try {
+          const response = await fetch(`http://localhost:4000/api/users/${user.username}`);
+          const data = await response.json();
+          console.log(data)
+          setSavedRecipes(data.data.likedRecipes || []);
+        } catch (error) {
+          console.error('Error fetching saved recipes:', error);
+        }
+      };
+      if (user) {
+        fetchSavedRecipes();
+      }
+    }, [user]);
+
     const handleSearch = async () => {
       try {
         const response = await axios.get(`https://www.themealdb.com/api/json/v1/1/search.php?s=${searchTerm}`);
@@ -41,7 +62,36 @@ const Search = () => {
       const handleCloseModal = () => {
         setSelectedMeal(null);
       };
+      const handleHeartClick = async (mealId, mealName) => {
+        // Prevent the default action of the checkbox
+        if (!user){
+          navigate('/login');
+        }
+        try {
+          const response = await axios.put(`http://localhost:4000/api/users/${user.username}/likeMeal`, {
+            mealId,
+            mealName
+          });
     
+          // Handle the response, such as updating the UI or showing a confirmation
+          console.log(response.data); // Log or handle the response as needed
+        } catch (error) {
+          console.error('Error liking meal:', error);
+        }
+      };
+      const isSaved = (id) => {
+        console.log(user)
+        console.log(savedRecipes)
+        if (user && savedRecipes) {
+          for (let i = 0; i < savedRecipes.length; i++) {
+            console.log(savedRecipes[i].mealId)
+            if (savedRecipes[i].mealId === id) {
+              return true;
+            }
+          }
+        }
+        return false;
+      };
     return (
       <div>
         <Header />
@@ -113,10 +163,24 @@ const Search = () => {
           <div
             key={meal.idMeal}
             className="result"
-            onClick={() => handleMealClick(meal)}
+            
           >
-            <img src={meal.strMealThumb} alt={meal.strMeal} className="meal-image" />
+            <h3  onClick={() => handleMealClick(meal)}>{meal.strMeal}</h3>
+            {user ? (
+                  <div>
+                  <input id={`heart-${meal.idMeal}`} type="checkbox"  defaultChecked={isSaved(meal.idMeal)}/>
+                  {/* checked={user && user.likedRecipes.some((likedMeal) => likedMeal.mealId === meal.idMeal)} */}
+                  <label htmlFor={`heart-${meal.idMeal}`}>❤</label>
+                  </div>
+                ) : (
+                  <div>
+                  <input id={`heart-${meal.idMeal}`} type="checkbox" onChange={() => handleHeartClick(meal.idMeal, meal.strMeal)}/>
+                  <label htmlFor={`heart-${meal.idMeal}`}>❤</label>
+                  </div>
+                )}
+            <img src={meal.strMealThumb} alt={meal.strMeal} className="meal-image" onClick={() => handleMealClick(meal)}/>
             <p className="meal-description">{meal.strMeal}</p>
+             
           </div>
         ))}
         </div>

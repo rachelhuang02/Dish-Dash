@@ -1,16 +1,14 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import Header from "../Header/Header";
 import "./Home.css";
 import search from "./search_icon.png";
 import holiday from "./holiday.png";
 import thumb from "./thumb.png";
-import 'normalize.css/normalize.css';
+// import 'normalize.css/normalize.css';
 
 const Home = () => {
   return (
     <div>
-      <Header />
       <div className="content-section">
         <div className="background-image"></div>
         <div className="overlay-container">

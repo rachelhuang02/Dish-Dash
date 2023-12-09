@@ -1,30 +1,12 @@
-import React from "react";
-import ReactDOM from "react-dom/client";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+// index.js
+import React from 'react';
+import ReactDOM from 'react-dom';
+import App from './App';
+import './index.css';
 
-import Home from "./Home/Home";
-import LogIn from "./LogIn/LogIn";
-import HolidayPicks from "./HolidayPicks/HolidayPicks";
-import PopularRecipes from "./PopularRecipes/PopularRecipes";
-import Search from "./Search/Search";
-import CreateUser from "./CreateUser/CreateUser";
-
-
-
-export default function App() {
-  return (
-    <BrowserRouter basename={process.env.PUBLIC_URL}>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/LogIn" element={<LogIn />} />
-        <Route path="/Holiday" element={<HolidayPicks />} />
-        <Route path="/Popular" element={<PopularRecipes />} />
-        <Route path="/Search" element={<Search />} />
-        <Route path="/CreateUser" element={<CreateUser/>}/>
-      </Routes>
-    </BrowserRouter>
-  );
-}
-
-const root = ReactDOM.createRoot(document.getElementById("root"));
-root.render(<App />);
+ReactDOM.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>,
+  document.getElementById('root')
+);

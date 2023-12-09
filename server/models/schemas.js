@@ -19,9 +19,7 @@ const userSchema = new Schema({
     required: true
   },
   likedRecipes: [{
-    mealId: {
-      type: mongoose.Types.ObjectId,
-    },
+    mealId: String,
     mealName: String
   }]
 });

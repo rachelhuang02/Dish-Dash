@@ -2,6 +2,7 @@
 const {User, HolidayRecipes, PopularRecipes} = require('../models/schemas'); 
 const { parseQuery, applyQueryOptions } = require('./queryUtils'); 
 
+
 module.exports = function (router) {
 
 var getUsersRoute = router.route('/users');
@@ -43,20 +44,20 @@ getUsersRoute.post(async function (req, res) {
 
   // GET /api/users/:id
   var getUserRoute = router.route('/users/:username');
-  getUserRoute.get(function (req, res) {
+  getUserRoute.get(async function (req, res) {
     const options = parseQuery(req.query);
-    let query = User.findById(req.params.username);
+    let query = User.findOne({ username: req.params.username });
     query = applyQueryOptions(query, options);
 
-    query.exec(function (err, user) {
-      if (err) {
-        return res.status(500).json({ message: "Error fetching user", data: {} });
-      }
+    try {
+      const user = await query.exec(); 
       if (!user) {
         return res.status(404).json({ message: "User not found", data: {} });
       }
       res.json({ message: "OK", data: user });
-    });
+    } catch (err) {
+      res.status(500).json({ message: "Error fetching user", data: err.toString() });
+    }
   });
 
   // PUT
@@ -74,7 +75,6 @@ getUsersRoute.post(async function (req, res) {
         user.username = req.body.username || user.username;
         user.email = req.body.email || user.email;
         user.password = req.body.password || user.password;
-        // Update other fields as necessary
 
         // Save the updated user
         const updatedUser = await user.save();
@@ -84,6 +84,29 @@ getUsersRoute.post(async function (req, res) {
     }
 });
 
+  var likeMealRoute = router.route('/users/:username/likeMeal');
+  likeMealRoute.put(async function (req, res) {
+    try {
+      const { username } = req.params;
+      const { mealId, mealName } = req.body; // Assuming mealId and mealName are sent in the request body
+
+      // Find the user and update their likedRecipes
+      const updatedUser = await User.findOneAndUpdate(
+        { username: username },
+        { $addToSet: { likedRecipes: { mealId, mealName } } }, // Use $addToSet to avoid duplicates
+        { new: true } // Return the updated document
+      );
+
+      if (!updatedUser) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      res.json({ message: "Meal added to liked recipes", data: updatedUser });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: "Error updating user", data: error.toString() });
+    }
+  });
     // DELETE
     var deleteUserRoute = router.route('/users/:username');
     deleteUserRoute.delete(async function (req, res) {

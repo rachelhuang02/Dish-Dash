@@ -40,7 +40,7 @@ const holidayRecipeSchema = new Schema({
 // Popular Recipe Schema
 const popularRecipeSchema = new Schema({
   mealId: {
-    type: mongoose.Types.ObjectId,
+    type: String,
     required: true
   },
   savedCount: {

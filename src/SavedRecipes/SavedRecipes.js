@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import Header from '../Header/Header';
 import Modal from '../Modal/Modal';
+import axios from 'axios';
 import { useUser } from '../UserContext';
+import { useNavigate } from "react-router-dom";
 import './SavedRecipes.css';
 
 const SavedRecipes = () => {
   const [savedRecipes, setSavedRecipes] = useState([]);
   const [selectedMeal, setSelectedMeal] = useState(null);
+  const navigate = useNavigate();
   const { user } = useUser();
 
   useEffect(() => {
@@ -44,6 +47,24 @@ const SavedRecipes = () => {
   const handleCloseModal = () => {
     setSelectedMeal(null);
   };
+
+  const handleHeartClick = async (mealId, mealName) => {
+    // Prevent the default action of the checkbox
+    if (!user){
+      navigate('/login');
+    }
+    try {
+      const response = await axios.put(`http://localhost:4000/api/users/${user.username}/likeMeal`, {
+        mealId,
+        mealName
+      });
+
+      // Handle the response, such as updating the UI or showing a confirmation
+      console.log(response.data); // Log or handle the response as needed
+    } catch (error) {
+      console.error('Error liking meal:', error);
+    }
+  };
 //   const isSaved=(id) => {
 //     for (let i=0;i<user.likedRecipes.length();i++){
 //         if (id==user.likedRecipes[i].mealId){
@@ -62,7 +83,7 @@ const SavedRecipes = () => {
             <h3 onClick={() => handleMealClick(meal)}>{meal.mealName}</h3>
             
               <div>
-                <input id={`heart-${meal.mealId}`} type="checkbox" checked={true}/>
+                <input id={`heart-${meal.mealId}`} type="checkbox" checked={true} onChange={() => handleHeartClick(meal.idMeal, meal.strMeal)}/>
                 <label htmlFor={`heart-${meal.mealId}`}>❤</label>
               </div>
             

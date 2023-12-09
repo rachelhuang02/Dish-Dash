@@ -49,6 +49,14 @@ const SavedRecipes = () => {
   const handleCloseModal = () => {
     setSelectedMeal(null);
   };
+//   const isSaved=(id) => {
+//     for (let i=0;i<user.likedRecipes.length();i++){
+//         if (id==user.likedRecipes[i].mealId){
+//             return true;
+//         }
+//     }
+//     return false;
+//   }
 
   return (
     <div>
@@ -59,7 +67,7 @@ const SavedRecipes = () => {
           <div className="card" key={meal.idMeal} onClick={() => handleMealClick(meal)}>
             <h3>{meal.strMeal}</h3>
             <div>
-              <input id={`heart-${meal.idMeal}`} type="checkbox" />
+              <input id={`heart-${meal.idMeal}`} type="checkbox" checked={true}/>
               <label htmlFor={`heart-${meal.idMeal}`}>❤</label>
             </div>
             <img src={meal.strMealThumb} alt={meal.strMeal} className="meal-image" />

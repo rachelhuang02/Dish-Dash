@@ -12,9 +12,24 @@ const HolidayPicks = () => {
   const [selectedHoliday, setSelectedHoliday] = useState('');
   const [mealDetails, setMealDetails] = useState(null);
   const [selectedMeal, setSelectedMeal] = useState(null);
-  const { user, setUser } = useUser(); 
+  const [savedRecipes, setSavedRecipes] = useState([]);
+  const { user } = useUser();
   const navigate = useNavigate();
-
+  useEffect(() => {
+    const fetchSavedRecipes = async () => {
+      try {
+        const response = await fetch(`http://localhost:4000/api/users/${user.username}`);
+        const data = await response.json();
+        console.log(data)
+        setSavedRecipes(data.data.likedRecipes || []);
+      } catch (error) {
+        console.error('Error fetching saved recipes:', error);
+      }
+    };
+    if (user) {
+      fetchSavedRecipes();
+    }
+  }, [user]);
   // Function to fetch holidays from your API
   const fetchHolidays = async () => {
     try {
@@ -88,6 +103,30 @@ const fetchMealDetails = async (mealId) => {
       console.error('Error liking meal:', error);
     }
   };
+
+  // const isSaved=(id) => {
+  //   for (let i=0;i<user.likedRecipes.length();i++){
+  //     console.log(user.likedRecipes[i].mealId)
+  //     console.log(id)
+  //       if (id==user.likedRecipes[i].mealId){
+  //           return true;
+  //       }
+  //   }
+  //   return false;
+  // }
+  const isSaved = (id) => {
+    console.log(user)
+    console.log(savedRecipes)
+    if (user && savedRecipes) {
+      for (let i = 0; i < savedRecipes.length; i++) {
+        console.log(savedRecipes[i].mealId)
+        if (savedRecipes[i].mealId === id) {
+          return true;
+        }
+      }
+    }
+    return false;
+  };
   
 
   return (
@@ -114,7 +153,7 @@ const fetchMealDetails = async (mealId) => {
                 <h3  onClick={() => handleMealClick(meal)}>{meal.strMeal}</h3>
                 {user ? (
                   <div>
-                  <input id={`heart-${meal.idMeal}`} type="checkbox" onChange={() => handleHeartClick(meal.idMeal, meal.strMeal)}/>
+                  <input id={`heart-${meal.idMeal}`} type="checkbox" defaultChecked={isSaved(meal.idMeal)}/>
                   {/* checked={user && user.likedRecipes.some((likedMeal) => likedMeal.mealId === meal.idMeal)} */}
                   <label htmlFor={`heart-${meal.idMeal}`}>❤</label>
                   </div>

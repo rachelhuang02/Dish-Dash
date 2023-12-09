@@ -44,14 +44,14 @@ const SavedRecipes = () => {
   const handleCloseModal = () => {
     setSelectedMeal(null);
   };
-  const isSaved=(id) => {
-    for (let i=0;i<user.likedRecipes.length();i++){
-        if (id==user.likedRecipes[i].mealId){
-            return true;
-        }
-    }
-    return false;
-  }
+//   const isSaved=(id) => {
+//     for (let i=0;i<user.likedRecipes.length();i++){
+//         if (id==user.likedRecipes[i].mealId){
+//             return true;
+//         }
+//     }
+//     return false;
+//   }
 
   return (
     <div>
@@ -62,11 +62,11 @@ const SavedRecipes = () => {
             <h3 onClick={() => handleMealClick(meal)}>{meal.mealName}</h3>
             
               <div>
-                <input id={`heart-${meal.mealId}`} type="checkbox" checked={isSaved(meal.mealId)}/>
+                <input id={`heart-${meal.mealId}`} type="checkbox" checked={true}/>
                 <label htmlFor={`heart-${meal.mealId}`}>❤</label>
               </div>
             
-            <img src={meal.strMealThumb} alt={meal.mealName} className="meal-image" onClick={isSaved(meal.mealId)} />
+            <img src={meal.strMealThumb} alt={meal.mealName} className="meal-image" onClick={() => handleMealClick(meal)} />
           </div>
         ))}
       </div>

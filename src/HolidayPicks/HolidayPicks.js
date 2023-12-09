@@ -116,11 +116,11 @@ const fetchMealDetails = async (mealId) => {
   // }
   const isSaved = (id) => {
     console.log(user)
-    console.log(user.likedRecipes)
-    if (user && user.likedRecipes) {
-      for (let i = 0; i < user.likedRecipes.length; i++) {
-        console.log(user.likedRecipes[i].mealId)
-        if (user.likedRecipes[i].mealId === id) {
+    console.log(savedRecipes)
+    if (user && savedRecipes) {
+      for (let i = 0; i < savedRecipes.length; i++) {
+        console.log(savedRecipes[i].mealId)
+        if (savedRecipes[i].mealId === id) {
           return true;
         }
       }

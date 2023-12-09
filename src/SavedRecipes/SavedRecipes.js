@@ -22,22 +22,21 @@ const SavedRecipes = () => {
       }
     };
 
-    const fetchMealDetails = async (mealId) => {
-        try {
-          const response = await fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${mealId}`);
-          const data = await response.json();
-          return data; // Just return the data here
-        } catch (error) {
-          console.error('Error fetching meal details:', error);
-          throw error; // Rethrow the error to handle it in the calling function
-        }
-    };
-
+    
     if (user) {
       fetchSavedRecipes();
     }
   }, [user]);
-
+  const fetchMealDetails = async (mealId) => {
+    try {
+      const response = await fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${mealId}`);
+      const data = await response.json();
+      return data; // Just return the data here
+    } catch (error) {
+      console.error('Error fetching meal details:', error);
+      throw error; // Rethrow the error to handle it in the calling function
+    }
+};
   const handleMealClick = (meal) => {
     setSelectedMeal(meal);
   };
@@ -45,6 +44,14 @@ const SavedRecipes = () => {
   const handleCloseModal = () => {
     setSelectedMeal(null);
   };
+  const isSaved=(id) => {
+    for (let i=0;i<user.likedRecipes.length();i++){
+        if (id==user.likedRecipes[i].mealId){
+            return true;
+        }
+    }
+    return false;
+  }
 
   return (
     <div>
@@ -55,11 +62,11 @@ const SavedRecipes = () => {
             <h3 onClick={() => handleMealClick(meal)}>{meal.mealName}</h3>
             
               <div>
-                <input id={`heart-${meal.mealId}`} type="checkbox" />
+                <input id={`heart-${meal.mealId}`} type="checkbox" checked={isSaved(meal.mealId)}/>
                 <label htmlFor={`heart-${meal.mealId}`}>❤</label>
               </div>
             
-            <img src={meal.strMealThumb} alt={meal.mealName} className="meal-image" onClick={() => handleMealClick(meal)} />
+            <img src={meal.strMealThumb} alt={meal.mealName} className="meal-image" onClick={isSaved(meal.mealId)} />
           </div>
         ))}
       </div>

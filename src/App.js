@@ -10,6 +10,7 @@ import Search from "./Search/Search";
 import CreateUser from "./CreateUser/CreateUser";
 import {UserProvider} from "./UserContext";
 import Header from "./Header/Header";
+import SavedRecipes from "./SavedRecipes/SavedRecipes";
 
 
 export default function App() {
@@ -25,6 +26,7 @@ export default function App() {
         <Route path="/Popular" element={<PopularRecipes />} />
         <Route path="/Search" element={<Search />} />
         <Route path="/CreateUser" element={<CreateUser/>}/>
+        <Route path="/SavedRecipes" element={<SavedRecipes/>}/>
       </Routes>
     </BrowserRouter>
     </UserProvider>

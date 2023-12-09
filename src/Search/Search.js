@@ -124,10 +124,11 @@ const Search = () => {
             className="result"
             
           >
-            <h3>{meal.strMeal}</h3>
+            <h3  onClick={() => handleMealClick(meal)}>{meal.strMeal}</h3>
             {user ? (
                   <div>
-                  <input id={`heart-${meal.idMeal}`} type="checkbox"/>
+                  <input id={`heart-${meal.idMeal}`} type="checkbox" />
+                  {/* checked={user && user.likedRecipes.some((likedMeal) => likedMeal.mealId === meal.idMeal)} */}
                   <label htmlFor={`heart-${meal.idMeal}`}>❤</label>
                   </div>
                 ) : (

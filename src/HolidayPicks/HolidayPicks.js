@@ -98,7 +98,7 @@ const fetchMealDetails = async (mealId) => {
           <div className="cards-container">
             {mealDetails && mealDetails.map((meal) => (
               <div className="card" key={meal.idMeal} >
-                <h3>{meal.strMeal}</h3>
+                <h3  onClick={() => handleMealClick(meal)}>{meal.strMeal}</h3>
                 {user ? (
                   <div>
                   <input id={`heart-${meal.idMeal}`} type="checkbox"/>

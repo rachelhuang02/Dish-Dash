@@ -124,7 +124,7 @@ const Search = () => {
             className="result"
             
           >
-            <h3>{meal.strMeal}</h3>
+            <h3  onClick={() => handleMealClick(meal)}>{meal.strMeal}</h3>
             {user ? (
                   <div>
                   <input id={`heart-${meal.idMeal}`} type="checkbox"/>

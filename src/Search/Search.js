@@ -41,6 +41,13 @@ const Search = () => {
       const handleCloseModal = () => {
         setSelectedMeal(null);
       };
+      const handleHeartClick = (event) => {
+        // Prevent the default action of the checkbox
+        event.preventDefault();
+        
+        // Redirect to the login page
+        window.location.href = 'http://localhost:3000/LogIn';
+      };
     
     return (
       <div>
@@ -113,10 +120,14 @@ const Search = () => {
           <div
             key={meal.idMeal}
             className="result"
-            onClick={() => handleMealClick(meal)}
+            
           >
-            <img src={meal.strMealThumb} alt={meal.strMeal} className="meal-image" />
+            <h3>{meal.strMeal}</h3>
+            <input id={`heart-${meal.idMeal}`} type="checkbox" onChange={handleHeartClick}/>
+            <label htmlFor={`heart-${meal.idMeal}`}>❤</label> 
+            <img src={meal.strMealThumb} alt={meal.strMeal} className="meal-image" onClick={() => handleMealClick(meal)}/>
             <p className="meal-description">{meal.strMeal}</p>
+             
           </div>
         ))}
         </div>

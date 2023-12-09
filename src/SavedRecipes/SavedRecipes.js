@@ -1,29 +1,30 @@
-// SavedRecipes.js
 import React, { useState, useEffect } from 'react';
-import './SavedRecipes.css';
-import Modal from '../Modal/Modal'; // Import the Modal component
+import Header from '../Header/Header';
+import Modal from '../Modal/Modal';
 import { useUser } from '../UserContext';
+import './SavedRecipes.css';
 
 const SavedRecipes = () => {
-  const [savedRecipes, setSavedRecipes] = useState([]); // Add state for saved recipes
+  const [savedRecipes, setSavedRecipes] = useState([]);
   const [selectedMeal, setSelectedMeal] = useState(null);
-  const { user } = useUser(); 
+  const { user } = useUser();
 
-  // Fetch saved recipes (replace this with your logic to fetch saved recipes)
   useEffect(() => {
-    // Example: Fetch saved recipes from an API endpoint
+    // Fetch saved recipes for the current user
     const fetchSavedRecipes = async () => {
       try {
-        const response = await fetch('http://localhost:4000/api/savedRecipes'); // Adjust the API endpoint
+        const response = await fetch(`http://localhost:4000/api/users/${user.username}`);
         const data = await response.json();
-        setSavedRecipes(data.data);
+        setSavedRecipes(data.data.likedRecipes || []);
       } catch (error) {
         console.error('Error fetching saved recipes:', error);
       }
     };
 
-    fetchSavedRecipes();
-  }, []);
+    if (user) {
+      fetchSavedRecipes();
+    }
+  }, [user]);
 
   const handleMealClick = (meal) => {
     setSelectedMeal(meal);
@@ -40,17 +41,12 @@ const SavedRecipes = () => {
         {savedRecipes.map((meal) => (
           <div className="card" key={meal.idMeal}>
             <h3 onClick={() => handleMealClick(meal)}>{meal.strMeal}</h3>
-            {user ? (
+            
               <div>
                 <input id={`heart-${meal.idMeal}`} type="checkbox" />
                 <label htmlFor={`heart-${meal.idMeal}`}>❤</label>
               </div>
-            ) : (
-              <div>
-                <input id={`heart-${meal.idMeal}`} type="checkbox" onChange={handleHeartClick} />
-                <label htmlFor={`heart-${meal.idMeal}`}>❤</label>
-              </div>
-            )}
+            
             <img src={meal.strMealThumb} alt={meal.strMeal} className="meal-image" onClick={() => handleMealClick(meal)} />
           </div>
         ))}

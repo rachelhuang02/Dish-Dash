@@ -3,12 +3,14 @@ import Header from "../Header/Header";
 import React, { useState, useEffect } from 'react';
 import './HolidayPicks.css';
 import Modal from "../Modal/Modal";
+import { useUser } from '../UserContext';
 
 const HolidayPicks = () => {
   const [holidays, setHolidays] = useState([]);
   const [selectedHoliday, setSelectedHoliday] = useState('');
   const [mealDetails, setMealDetails] = useState(null);
   const [selectedMeal, setSelectedMeal] = useState(null);
+  const { user, setUser } = useUser(); 
 
   // Function to fetch holidays from your API
   const fetchHolidays = async () => {
@@ -65,6 +67,7 @@ const fetchMealDetails = async (mealId) => {
   const handleCloseModal = () => {
     setSelectedMeal(null);
   };
+
   const handleHeartClick = (event) => {
     // Prevent the default action of the checkbox
     event.preventDefault();
@@ -96,9 +99,18 @@ const fetchMealDetails = async (mealId) => {
             {mealDetails && mealDetails.map((meal) => (
               <div className="card" key={meal.idMeal} >
                 <h3>{meal.strMeal}</h3>
-                <img src={meal.strMealThumb} alt={meal.strMeal} className="meal-image"  onClick={(e) => e.stopPropagation()}/>
-                <input id={`heart-${meal.idMeal}`} type="checkbox" onChange={handleHeartClick}/>
-                <label htmlFor={`heart-${meal.idMeal}`}>❤</label>  
+                {user ? (
+                  <div>
+                  <input id={`heart-${meal.idMeal}`} type="checkbox"/>
+                  <label htmlFor={`heart-${meal.idMeal}`}>❤</label>
+                  </div>
+                ) : (
+                  <div>
+                  <input id={`heart-${meal.idMeal}`} type="checkbox" onChange={handleHeartClick}/>
+                  <label htmlFor={`heart-${meal.idMeal}`}>❤</label>
+                  </div>
+                )}
+                <img src={meal.strMealThumb} alt={meal.strMeal} className="meal-image"  onClick={() => handleMealClick(meal)}/>
               </div>
             ))}
           </div>

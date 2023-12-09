@@ -3,6 +3,7 @@ import Header from "../Header/Header";
 import "./Search.css";
 import axios from 'axios';
 import Modal from "../Modal/Modal"
+import { useUser } from '../UserContext';
 
 
 const Search = () => {
@@ -11,6 +12,7 @@ const Search = () => {
     const [areaFilter, setAreaFilter] = useState('');
     const [searchResults, setSearchResults] = useState([]);
     const [selectedMeal, setSelectedMeal] = useState(null);
+    const { user, setUser } = useUser(); 
   
     const handleSearch = async () => {
       try {
@@ -123,8 +125,17 @@ const Search = () => {
             
           >
             <h3>{meal.strMeal}</h3>
-            <input id={`heart-${meal.idMeal}`} type="checkbox" onChange={handleHeartClick}/>
-            <label htmlFor={`heart-${meal.idMeal}`}>❤</label> 
+            {user ? (
+                  <div>
+                  <input id={`heart-${meal.idMeal}`} type="checkbox"/>
+                  <label htmlFor={`heart-${meal.idMeal}`}>❤</label>
+                  </div>
+                ) : (
+                  <div>
+                  <input id={`heart-${meal.idMeal}`} type="checkbox" onChange={handleHeartClick}/>
+                  <label htmlFor={`heart-${meal.idMeal}`}>❤</label>
+                  </div>
+                )}
             <img src={meal.strMealThumb} alt={meal.strMeal} className="meal-image" onClick={() => handleMealClick(meal)}/>
             <p className="meal-description">{meal.strMeal}</p>
              

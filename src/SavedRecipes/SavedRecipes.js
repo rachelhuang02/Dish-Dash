@@ -15,10 +15,22 @@ const SavedRecipes = () => {
       try {
         const response = await fetch(`http://localhost:4000/api/users/${user.username}`);
         const data = await response.json();
+        console.log(data)
         setSavedRecipes(data.data.likedRecipes || []);
       } catch (error) {
         console.error('Error fetching saved recipes:', error);
       }
+    };
+
+    const fetchMealDetails = async (mealId) => {
+        try {
+          const response = await fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${mealId}`);
+          const data = await response.json();
+          return data; // Just return the data here
+        } catch (error) {
+          console.error('Error fetching meal details:', error);
+          throw error; // Rethrow the error to handle it in the calling function
+        }
     };
 
     if (user) {
@@ -39,15 +51,15 @@ const SavedRecipes = () => {
       <h1>Saved Recipes</h1>
       <div className="cards-container">
         {savedRecipes.map((meal) => (
-          <div className="card" key={meal.idMeal}>
-            <h3 onClick={() => handleMealClick(meal)}>{meal.strMeal}</h3>
+          <div className="card" key={meal.mealId}>
+            <h3 onClick={() => handleMealClick(meal)}>{meal.mealName}</h3>
             
               <div>
-                <input id={`heart-${meal.idMeal}`} type="checkbox" />
-                <label htmlFor={`heart-${meal.idMeal}`}>❤</label>
+                <input id={`heart-${meal.mealId}`} type="checkbox" />
+                <label htmlFor={`heart-${meal.mealId}`}>❤</label>
               </div>
             
-            <img src={meal.strMealThumb} alt={meal.strMeal} className="meal-image" onClick={() => handleMealClick(meal)} />
+            <img src={meal.strMealThumb} alt={meal.mealName} className="meal-image" onClick={() => handleMealClick(meal)} />
           </div>
         ))}
       </div>

@@ -4,6 +4,8 @@ import React, { useState, useEffect } from 'react';
 import './HolidayPicks.css';
 import Modal from "../Modal/Modal";
 import { useUser } from '../UserContext';
+import {useNavigate} from 'react-router-dom';
+import axios from 'axios';
 
 const HolidayPicks = () => {
   const [holidays, setHolidays] = useState([]);
@@ -11,6 +13,7 @@ const HolidayPicks = () => {
   const [mealDetails, setMealDetails] = useState(null);
   const [selectedMeal, setSelectedMeal] = useState(null);
   const { user, setUser } = useUser(); 
+  const navigate = useNavigate();
 
   // Function to fetch holidays from your API
   const fetchHolidays = async () => {
@@ -68,12 +71,22 @@ const fetchMealDetails = async (mealId) => {
     setSelectedMeal(null);
   };
 
-  const handleHeartClick = (event) => {
+  const handleHeartClick = async (mealId, mealName) => {
     // Prevent the default action of the checkbox
-    event.preventDefault();
-    
-    // Redirect to the login page
-    window.location.href = 'http://localhost:3000/LogIn';
+    if (!user){
+      navigate('/login');
+    }
+    try {
+      const response = await axios.put(`http://localhost:4000/api/users/${user.username}/likeMeal`, {
+        mealId,
+        mealName
+      });
+
+      // Handle the response, such as updating the UI or showing a confirmation
+      console.log(response.data); // Log or handle the response as needed
+    } catch (error) {
+      console.error('Error liking meal:', error);
+    }
   };
   
 
@@ -101,12 +114,12 @@ const fetchMealDetails = async (mealId) => {
                 <h3>{meal.strMeal}</h3>
                 {user ? (
                   <div>
-                  <input id={`heart-${meal.idMeal}`} type="checkbox"/>
+                  <input id={`heart-${meal.idMeal}`} type="checkbox" onChange={() => handleHeartClick(meal.idMeal, meal.strMeal)}/>
                   <label htmlFor={`heart-${meal.idMeal}`}>❤</label>
                   </div>
                 ) : (
                   <div>
-                  <input id={`heart-${meal.idMeal}`} type="checkbox" onChange={handleHeartClick}/>
+                  <input id={`heart-${meal.idMeal}`} type="checkbox" onChange={() => handleHeartClick(meal.idMeal, meal.strMeal)}/>
                   <label htmlFor={`heart-${meal.idMeal}`}>❤</label>
                   </div>
                 )}

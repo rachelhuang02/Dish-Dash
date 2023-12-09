@@ -1,13 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './Header.css';
 import { Link, useNavigate } from "react-router-dom";
 import { useUser } from '../UserContext';
-import Search from '../Search/Search';
-
 
 const Header = () => {
   const { user, setUser } = useUser(); 
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
+  const [showDropdown, setShowDropdown] = useState(false);
 
   // Logout handler
   const handleLogout = () => {
@@ -15,28 +14,29 @@ const Header = () => {
     localStorage.removeItem('token');
     navigate('/');
   };
-  // const gotoSaved = (event) => {
-  //   // Prevent the default action of the checkbox
-  //   event.preventDefault();
-    
-  //   // Redirect to the login page
-  //   window.location.href = 'http://localhost:3000/SavedRecipes';
-  // };
+
   return (
     <header className="header">
        <Link to={`/`}><div className="brand">Dish Dive</div></Link>
-       {user ? (
-        <div>
-         {/* <Link to={`/Search`}><div className="search">Search</div></Link> */}
-         <div className="user-info">
-           Welcome, {user.username}
-         <button onClick={handleLogout} className="logout-button">Logout</button>
-         <Link to={`/SavedRecipes`}><button className="saved">Saved Recipes</button></Link>
-         </div>
-        </div>
-       ) : (
-         <Link to={`/LogIn`}><div className="login">Log in</div></Link>
-       )}
+       <div className="right-section">
+         {user ? (
+           <>
+             <Link to={`/Search`}><div className="menu-item">Find Recipe</div></Link>
+             <Link to={`/SavedRecipes`}><div className="menu-item">My Recipes</div></Link>
+             <div className="user-menu" onClick={() => setShowDropdown(!showDropdown)}>
+               <span className="username">{user.username}</span>
+               <span className="arrow-down"></span>
+               {showDropdown && (
+                 <div className="dropdown-menu">
+                   <button onClick={handleLogout} className="dropdown-item">Logout</button>
+                 </div>
+               )}
+             </div>
+           </>
+         ) : (
+           <Link to={`/LogIn`}><div className="login">Log in</div></Link>
+         )}
+       </div>
     </header>
   );
 };

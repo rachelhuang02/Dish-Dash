@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import './CreateUser.css'; // Import CSS file for styling
 import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const CreateUser = () => {
     const [user, setUser] = useState({
@@ -9,6 +10,7 @@ const CreateUser = () => {
         email: '',
         password: ''
     });
+    const navigate = useNavigate();
 
     const handleChange = (e) => {
         setUser({ ...user, [e.target.name]: e.target.value });
@@ -21,6 +23,7 @@ const CreateUser = () => {
             console.log(response.data);
             // Handle post-creation logic (e.g., redirect to login page)
             <Link to="/LogIn" className="create-user-link">Create New User</Link>
+            navigate('/LogIn');
         } catch (error) {
             console.error('Error creating user:', error);
         }

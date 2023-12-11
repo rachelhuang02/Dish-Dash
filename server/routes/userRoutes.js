@@ -107,6 +107,30 @@ getUsersRoute.post(async function (req, res) {
       res.status(500).json({ message: "Error updating user", data: error.toString() });
     }
   });
+
+  var unlikeMealRoute = router.route('/users/:username/unlikeMeal');
+unlikeMealRoute.put(async function (req, res) {
+  try {
+    const { username } = req.params;
+    const { mealId } = req.body; // Assuming mealId is sent in the request body
+
+    // Find the user and remove the meal from likedRecipes
+    const updatedUser = await User.findOneAndUpdate(
+      { username: username },
+      { $pull: { likedRecipes: { mealId } } }, // Use $pull to remove the meal
+      { new: true } // Return the updated document
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.json({ message: "Meal removed from liked recipes", data: updatedUser });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error updating user", data: error.toString() });
+  }
+});
     // DELETE
     var deleteUserRoute = router.route('/users/:username');
     deleteUserRoute.delete(async function (req, res) {

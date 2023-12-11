@@ -45,7 +45,10 @@ const Search = () => {
         if (areaFilter) {
           filteredResults = filteredResults.filter(meal => meal.strArea === areaFilter);
         }
-  
+        if (filteredResults === null) {
+          alert("No results found. Please try again.");
+          filteredResults = [];
+        }
         setSearchResults(filteredResults);
       } catch (error) {
         console.error('Error fetching data:', error);

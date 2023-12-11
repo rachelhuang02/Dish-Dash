@@ -26,23 +26,25 @@ const SavedRecipes = () => {
 
   useEffect(() => {
     const fetchSavedRecipes = async () => {
+      if (!user) return;
+  
       try {
         const response = await fetch(`http://localhost:4000/api/users/${user.username}`);
         const data = await response.json();
         const likedRecipes = data.data.likedRecipes || [];
-
+  
         // Use Promise.all to fetch all meal details
         const mealDetailsPromises = likedRecipes.map(recipe => fetchMealDetails(recipe.mealId));
         const mealsData = await Promise.all(mealDetailsPromises);
+  
+        // Update the mealDetails state with the fetched data
         setMealDetails(mealsData);
       } catch (error) {
         console.error('Error fetching saved recipes:', error);
       }
     };
-
-    if (user) {
-      fetchSavedRecipes();
-    }
+  
+    fetchSavedRecipes();
   }, [user]);
 
   const handleMealClick = (meal) => {
@@ -53,31 +55,23 @@ const SavedRecipes = () => {
     setSelectedMeal(null);
   };
 
-  const handleHeartClick = async (mealId, mealName) => {
+  const handleHeartClick = async (mealId) => {
     // Prevent the default action of the checkbox
     if (!user){
       navigate('/login');
     }
     try {
-      const response = await axios.put(`http://localhost:4000/api/users/${user.username}/likeMeal`, {
-        mealId,
-        mealName
+      const response = await axios.put(`http://localhost:4000/api/users/${user.username}/unlikeMeal`, {
+        mealId
       });
-
+      const updatedMealDetails = mealDetails.filter(meal => meal.idMeal !== mealId);
+      setMealDetails(updatedMealDetails);
       // Handle the response, such as updating the UI or showing a confirmation
       console.log(response.data); // Log or handle the response as needed
     } catch (error) {
-      console.error('Error liking meal:', error);
+      console.error('Error unliking meal:', error);
     }
   };
-//   const isSaved=(id) => {
-//     for (let i=0;i<user.likedRecipes.length();i++){
-//         if (id==user.likedRecipes[i].mealId){
-//             return true;
-//         }
-//     }
-//     return false;
-//   }
 
   return (
     <div>
@@ -85,10 +79,10 @@ const SavedRecipes = () => {
       <h1>Saved Recipes</h1>
       <div className="cards-container">
         {mealDetails.map((meal) => (
-          <div className="card" key={meal.idMeal} onClick={() => handleMealClick(meal)}>
-            <h3>{meal.strMeal}</h3>
+          <div className="card" key={meal.idMeal}>
+            <h3 onClick={() => handleMealClick(meal)}>{meal.strMeal}</h3>
             <div>
-              <input id={`heart-${meal.idMeal}`} type="checkbox" checked={true}/>
+              <input id={`heart-${meal.idMeal}`} type="checkbox" checked={true} onChange={() => handleHeartClick(meal.idMeal)}/>
               <label htmlFor={`heart-${meal.idMeal}`}>❤</label>
             </div>
             <img src={meal.strMealThumb} alt={meal.strMeal} className="meal-image" />
@@ -101,3 +95,4 @@ const SavedRecipes = () => {
 };
 
 export default SavedRecipes;
+

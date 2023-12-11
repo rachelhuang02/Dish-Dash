@@ -94,13 +94,19 @@ const PopularRecipes = () => {
       navigate('/login');
     }
     try {
-      const response = await axios.put(`http://localhost:4000/api/users/${user.username}/likeMeal`, {
-        mealId,
-        mealName
-      });
-
-      // Handle the response, such as updating the UI or showing a confirmation
-      console.log(response.data); // Log or handle the response as needed
+      let response;
+      if (isSaved(mealId)) {
+        // If the meal is already saved, send a request to unlike it
+        response = await axios.put(`http://localhost:4000/api/users/${user.username}/unlikeMeal`, {
+          mealId
+        });
+      } else {
+        // If the meal is not saved, send a request to like it
+        response = await axios.put(`http://localhost:4000/api/users/${user.username}/likeMeal`, {
+          mealId,
+          mealName
+        });
+      }
     } catch (error) {
       console.error('Error liking meal:', error);
     }
@@ -141,7 +147,7 @@ const PopularRecipes = () => {
                 <h3  onClick={() => handleMealClick(meal)}>{meal.strMeal}</h3>
                 {user ? (
                   <div>
-                  <input id={`heart-${meal.idMeal}`} type="checkbox" defaultChecked={isSaved(meal.idMeal)}/>
+                  <input id={`heart-${meal.idMeal}`} type="checkbox" defaultChecked={isSaved(meal.idMeal)}  onChange={() => handleHeartClick(meal.idMeal, meal.strMeal)}/>
                   {/* checked={user && user.likedRecipes.some((likedMeal) => likedMeal.mealId === meal.idMeal)} */}
                   <label htmlFor={`heart-${meal.idMeal}`}>❤</label>
                   </div>
